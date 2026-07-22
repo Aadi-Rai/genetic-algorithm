@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 from enum import Enum
-from math import exp
 from random import choice, randint, random
 
 TARGET = 832
@@ -91,3 +90,9 @@ class Genome:
 
     def calculate_fitness(self) -> None:
         self.fitness = 1000 - abs(self.target - self.evaluate_node(self.expression))
+
+    def remove_node(self, node: Node) -> None:
+        pass
+
+    def mutate(self) -> None:
+        pass
