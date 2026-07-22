@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from enum import Enum
+from math import exp
 from random import choice, randint, random
 
 TARGET = 832
@@ -19,9 +20,12 @@ class Operator(Enum):
 
 @dataclass
 class Expression:
-    left: int | Expression | None = None
-    operator: Operator | None = None
-    right: int | Expression | None = None
+    left: int | Expression = -1
+    operator: Operator = Operator.ADD
+    right: int | Expression = -1
+
+
+Node = Expression | int
 
 
 class Genome:
@@ -71,3 +75,19 @@ class Genome:
                 else:
                     expression.right = Expression()
                     self.populate_expression(expression.right, num_available - 1)
+
+    def evaluate_node(self, node: Node) -> float:
+        if isinstance(node, int):
+            return node
+
+        if node.operator == Operator.ADD:
+            return self.evaluate_node(node.left) + self.evaluate_node(node.right)
+        if node.operator == Operator.SUB:
+            return self.evaluate_node(node.left) - self.evaluate_node(node.right)
+        if node.operator == Operator.MUL:
+            return self.evaluate_node(node.left) * self.evaluate_node(node.right)
+        else:
+            return self.evaluate_node(node.left) / self.evaluate_node(node.right)
+
+    def calculate_fitness(self) -> None:
+        self.fitness = 1000 - abs(self.target - self.evaluate_node(self.expression))
