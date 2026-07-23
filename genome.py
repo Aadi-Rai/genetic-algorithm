@@ -2,6 +2,7 @@ from collections import deque
 from copy import deepcopy
 from dataclasses import dataclass
 from enum import Enum
+from math import isnan, nan
 from random import choice, randint, random
 
 TARGET = 832
@@ -94,10 +95,17 @@ class Genome:
         if node.operator == Operator.MUL:
             return self.evaluate_node(node.left) * self.evaluate_node(node.right)
         else:
-            return self.evaluate_node(node.left) / self.evaluate_node(node.right)
+            try:
+                return self.evaluate_node(node.left) / self.evaluate_node(node.right)
+            except ZeroDivisionError:
+                return nan
 
     def calculate_fitness(self) -> None:
-        self.fitness = 1000 - abs(self.target - self.evaluate_node(self.expression))
+        result: float = self.evaluate_node(self.expression)
+        if not isnan(result):
+            self.fitness = 1000 - abs(self.target - result)
+        else:
+            self.fitness = 0
 
     def get_random_leaf_expression(
         self,
@@ -105,6 +113,7 @@ class Genome:
         curr: Expression = self.expression
         prev: Expression | None = None
         prev_direction: Direction | None = None
+
         while not (isinstance(curr.left, int) and isinstance(curr.right, int)):
             prev = curr
             if isinstance(curr.left, Expression) and (
