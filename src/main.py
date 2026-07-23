@@ -2,8 +2,8 @@ from copy import deepcopy
 from random import choices, random
 from time import perf_counter
 
-import config
-from genome import Genome
+from problems.countdown import config
+from problems.countdown.genome import Genome
 
 survival_number: int = round(config.POPULATION_SIZE * config.SURVIVAL_PERCENTAGE)
 
