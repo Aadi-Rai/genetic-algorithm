@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from enum import Enum
 from math import isnan, nan
 from random import choice, randint, random
+from typing import override
 
 TARGET = 832
 NUMBERS = [50, 75, 4, 7, 3, 6]
@@ -23,6 +24,14 @@ class Operator(Enum):
     SUB = 1
     MUL = 2
     DIV = 3
+
+
+operator_symbols: dict[Operator, str] = {
+    Operator.ADD: "+",
+    Operator.SUB: "-",
+    Operator.MUL: "*",
+    Operator.DIV: "/",
+}
 
 
 @dataclass
@@ -173,3 +182,16 @@ class Genome:
             old_operator = expression.operator
             while expression.operator == old_operator:
                 expression.operator = Operator(randint(0, 3))
+
+    def build_string_representation(self, node: Node) -> str:
+        if isinstance(node, int):
+            return str(node)
+
+        left: str = self.build_string_representation(node.left)
+        operator: str = operator_symbols[node.operator]
+        right: str = self.build_string_representation(node.right)
+        return f"({left} {operator} {right})"
+
+    @override
+    def __str__(self) -> str:
+        return self.build_string_representation(self.expression)[1:-1]

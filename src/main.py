@@ -52,4 +52,4 @@ for generation in range(config.GENERATION_LIMIT + 1):
 
     print(f"Generation took: {perf_counter() - start:.4f}s")
 
-print(best_genome)
+print(str(best_genome))
