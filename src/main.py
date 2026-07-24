@@ -5,8 +5,9 @@ from time import perf_counter
 from problems.countdown import config
 from problems.countdown.genome import Genome
 
-num_survivors: int = round(config.POPULATION_SIZE * config.SURVIVAL_RATE)
 num_elites: int = round(config.POPULATION_SIZE * config.ELITISM_PERCENTAGE)
+num_survivors: int = round(config.POPULATION_SIZE * config.SURVIVAL_RATE)
+num_immigrants: int = round(config.POPULATION_SIZE * config.IMMIGRATION_RATE)
 
 population: list[Genome] = [Genome() for _ in range(config.POPULATION_SIZE)]
 best_genome: Genome = population[0]
@@ -41,11 +42,13 @@ while True:
             break
 
     fittest_genomes: list[Genome] = population[:num_survivors]
-    population[num_elites:] = choices(
+    population[num_elites:-num_immigrants] = choices(
         fittest_genomes,
         [max(x.fitness, 0.1) for x in fittest_genomes],
-        k=config.POPULATION_SIZE - num_elites,
+        k=config.POPULATION_SIZE - num_elites - num_immigrants,
     )
+
+    population[-num_immigrants:] = [Genome() for _ in range(num_immigrants)]
 
     population = [deepcopy(x) for x in population]
     for i in range(num_elites, config.POPULATION_SIZE):
