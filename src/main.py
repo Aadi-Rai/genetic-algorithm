@@ -10,7 +10,8 @@ survival_number: int = round(config.POPULATION_SIZE * config.SURVIVAL_PERCENTAGE
 population: list[Genome] = [Genome() for _ in range(config.POPULATION_SIZE)]
 best_genome: Genome = population[0]
 
-for generation in range(config.GENERATION_LIMIT + 1):
+generation: int = 0
+while True:
     start: float = perf_counter()
     print(f"\n****** Running generation {generation} ******")
 
@@ -51,5 +52,9 @@ for generation in range(config.GENERATION_LIMIT + 1):
             population[i].mutate()
 
     print(f"Generation took: {perf_counter() - start:.4f}s")
+
+    generation += 1
+    if config.USE_GENERATION_LIMIT and generation == config.GENERATION_LIMIT:
+        break
 
 print(str(best_genome))
