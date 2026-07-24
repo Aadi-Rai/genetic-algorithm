@@ -5,7 +5,8 @@ from time import perf_counter
 from problems.countdown import config
 from problems.countdown.genome import Genome
 
-survival_number: int = round(config.POPULATION_SIZE * config.SURVIVAL_PERCENTAGE)
+num_survivors: int = round(config.POPULATION_SIZE * config.SURVIVAL_RATE)
+num_elites: int = round(config.POPULATION_SIZE * config.ELITISM_PERCENTAGE)
 
 population: list[Genome] = [Genome() for _ in range(config.POPULATION_SIZE)]
 best_genome: Genome = population[0]
@@ -39,15 +40,15 @@ while True:
         if fitness_metric >= config.FITNESS_THRESHOLD:
             break
 
-    fittest_genomes: list[Genome] = population[:survival_number]
-    population[config.ELITISM :] = choices(
+    fittest_genomes: list[Genome] = population[:num_survivors]
+    population[num_elites:] = choices(
         fittest_genomes,
         [max(x.fitness, 0.1) for x in fittest_genomes],
-        k=config.POPULATION_SIZE - config.ELITISM,
+        k=config.POPULATION_SIZE - num_elites,
     )
 
     population = [deepcopy(x) for x in population]
-    for i in range(config.ELITISM, config.POPULATION_SIZE):
+    for i in range(num_elites, config.POPULATION_SIZE):
         if random() < config.MUTATION_RATE:
             population[i].mutate()
 
