@@ -157,7 +157,7 @@ class Genome:
         return result
 
     def mutate(self) -> None:
-        if random() < 1 / 3:
+        if random() < 1 / 6:
             leaf, parent, parent_direction = self.get_random_leaf_expression()
 
             if parent is not None and (
