@@ -1,5 +1,6 @@
 # numbers game from countdown
 # tries to make the target mathematically using only the available numbers
+# does not penalise non-natural numbers
 
 # the current mutations vary the result of an expression by too much
 # this implementation is slower than random search for small inputs
@@ -204,4 +205,8 @@ class Genome:
 
     @override
     def __str__(self) -> str:
-        return self.build_string_representation(self.expression)[1:-1]
+        return (
+            self.build_string_representation(self.expression)[1:-1]
+            + " = "
+            + str(self.evaluate_node(self.expression))
+        )
