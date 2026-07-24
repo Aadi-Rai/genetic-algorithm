@@ -41,7 +41,7 @@ for generation in range(config.GENERATION_LIMIT + 1):
     fittest_genomes: list[Genome] = population[:survival_number]
     population[config.ELITISM :] = choices(
         fittest_genomes,
-        [x.fitness if x.fitness != 0 else 0.1 for x in fittest_genomes],
+        [max(x.fitness, 0.1) for x in fittest_genomes],
         k=config.POPULATION_SIZE - config.ELITISM,
     )
 
