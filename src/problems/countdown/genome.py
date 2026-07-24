@@ -1,3 +1,10 @@
+# numbers game from countdown
+# tries to make the target mathematically using only the available numbers
+
+# the current mutations vary the result of an expression by too much
+# this implementation is slower than random search for small inputs
+# but faster for large ones
+
 from collections import deque
 from copy import deepcopy
 from dataclasses import dataclass
@@ -71,6 +78,9 @@ class Genome:
                 self.populate_expression(expression.right, num_available - 1)
 
         else:
+            # numbers must be placed before expressions
+            # so the expression knows the correct amount of available numbers
+            # hence the abnormal control flow and probabilities
             if random() < (1 - NUMBER_PROBABILITY) ** 2:
                 available_left = randint(2, num_available - 2)
                 expression.left = Expression()
